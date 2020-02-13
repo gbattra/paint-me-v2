@@ -15,8 +15,12 @@ class VGG16_Painter:
         self.model = model
 
     
-    def paint(self, content_image, style_image):
-        return
+    def paint(self, content_image, style_image, generated_image):
+        tf.compat.v1.reset_default_graph()
+
+        sess = tf.compat.v1.InteractiveSession()
+        print(content_image.shape)
+        # model = self.model(content_image)
 
     
 
