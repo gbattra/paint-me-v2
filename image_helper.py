@@ -50,3 +50,14 @@ def image_show(image, title=None):
 
 def clip_0_1(image):
     return tf.clip_by_value(image, clip_value_min=0.0, clip_value_max=1.0)
+
+def save_image(image, filename):
+    # Ensure the pixel-values are between 0 and 255.
+    image = np.clip(image, 0.0, 255.0)
+
+    # Convert to bytes.
+    image = image.astype(np.uint8)
+
+    # Write the image-file in jpeg-format.
+    with open(filename, 'wb') as file:
+        PIL.Image.fromarray(image).save(file, 'jpeg')

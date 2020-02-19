@@ -1,4 +1,5 @@
 import tensorflow as tf
+import time
 import image_helper
 
 
@@ -18,6 +19,22 @@ class NSTTrainer(object):
         self.optimizer = optimizer
         self.style_weight = style_weight
         self.content_weight = content_weight
+
+    def train(self, image, epochs, steps):
+        start = time.time()
+
+        step_index = 0
+        for epoch in range(epochs):
+            for step in range(steps):
+                step_index += 1
+                self.train_step(image)
+                print('.', end='')
+            print('Train step: {}'.format(step_index))
+
+        end = time.time()
+        print('Total time: {:.1f}'.format(end - start))
+
+        return image
 
     @tf.function
     def train_step(self, image):
