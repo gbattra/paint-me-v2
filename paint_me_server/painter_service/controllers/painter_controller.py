@@ -43,3 +43,9 @@ def request_paintings(request):
     paintings = models.RequestPainting.objects.filter(painter_request_id=request.GET['painter_request_id'])
     paintings_serialized = serializers.serialize('json', list(paintings))
     return HttpResponse(paintings_serialized)
+
+
+def request_painting(request):
+    painting = models.RequestPainting.objects.get(id=request.GET['request_painting_id'])
+    painting_serialized = serializers.serialize('json', [painting])
+    return HttpResponse(painting_serialized)
