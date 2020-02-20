@@ -19,5 +19,6 @@ from django.urls import path, include
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
-    path('paint/', include('painter_server.urls'))
+    path('paint/', include('painter_service.urls'))
+    , path('request/submit/', include('client_service.urls'))
 ]

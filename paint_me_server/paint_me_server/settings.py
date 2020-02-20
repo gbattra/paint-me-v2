@@ -31,8 +31,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'painter_server.apps.PainterServerConfig'
-    
+    'painter_service.apps.PainterServiceConfig'
+    , 'client_service.apps.ClientServiceConfig'
+
     , 'django.contrib.admin'
     , 'django.contrib.auth'
     , 'django.contrib.contenttypes'
