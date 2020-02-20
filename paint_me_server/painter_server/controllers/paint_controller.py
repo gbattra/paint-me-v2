@@ -1,7 +1,7 @@
 import tensorflow as tf
 
-from ..lib.painter import Painter
-from ..lib.painter_configs import *
+from ..painting.painter import Painter
+from ..painting.painter_configs import *
 
 
 def paint(request):
