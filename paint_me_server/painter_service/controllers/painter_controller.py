@@ -27,5 +27,5 @@ def paint(request):
             configs['STYLE_LAYERS'],
             configs['CONTENT_WEIGHT'],
             configs['STYLE_WEIGHT'])
-        image = painter.paint('painter_request.content_image_path', configs['STYLE_IMAGE_PATH'])
+        image = painter.paint(painter_request.content_image_url, configs['STYLE_IMAGE_PATH'])
     return HttpResponse('Finished painting')
