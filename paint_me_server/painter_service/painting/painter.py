@@ -40,7 +40,7 @@ class Painter(object):
                                          self.style_weight,
                                          self.content_weight)
         image = tf.Variable(tf.expand_dims(content_image, 0))  # the image to train / paint
-        image = trainer.train(image, epochs=10, steps=100)
+        image = trainer.train(image, epochs=10, steps=1)
 
         # plt.plot()
         # image_helper.image_show(image, 'Generated Image')
