@@ -1,7 +1,7 @@
 from django.urls import path
-from .controllers import paint_controller
+from .controllers import painter_controller
 
 
 urlpatterns = [
-    path('', paint_controller.paint, name='paint-image'),
+    path('', painter_controller.paint, name='paint-image'),
 ]

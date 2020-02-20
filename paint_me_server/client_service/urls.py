@@ -1,7 +1,7 @@
 from django.urls import path
-from .controllers import request_controller
+from .controllers import client_controller
 
 
 urlpatterns = [
-    path('', request_controller.submit_request, name='submit-request'),
+    path('', client_controller.submit_request, name='submit-request'),
 ]
