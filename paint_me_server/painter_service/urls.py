@@ -3,5 +3,6 @@ from .controllers import painter_controller
 
 
 urlpatterns = [
-    path('', painter_controller.paint, name='paint-image'),
+    path('paint/', painter_controller.paint, name='paint-image'),
+    path('submit-request/', painter_controller.submit_request, name='submit-request')
 ]

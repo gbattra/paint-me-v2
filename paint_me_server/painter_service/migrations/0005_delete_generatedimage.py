@@ -6,7 +6,6 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('client_service', '0006_auto_20200220_1124'),
         ('painter_service', '0004_auto_20200220_1114'),
     ]
 

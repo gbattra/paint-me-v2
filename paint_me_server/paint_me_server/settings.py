@@ -32,7 +32,6 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'painter_service.apps.PainterServiceConfig'
-    , 'client_service.apps.ClientServiceConfig'
 
     , 'django.contrib.admin'
     , 'django.contrib.auth'
