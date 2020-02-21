@@ -6,8 +6,8 @@ from ..painting.painter_configs import *
 
 
 def paint(request):
-    painter_request_id = request['painter_request_id']
-
+    painter_request_id = request.GET['painter_request_id']
+    content_image_url = request.GET['content_image_url']
     # publish PROCESSING notificaiton to queue w/ request id
 
     pretrained_model = VGG19(include_top=False, weights='imagenet')
@@ -19,11 +19,11 @@ def paint(request):
             configs['STYLE_LAYERS'],
             configs['CONTENT_WEIGHT'],
             configs['STYLE_WEIGHT'])
-        image = painter.paint(request['content_image_url'], configs['STYLE_IMAGE_PATH'])
+        image = painter.paint(content_image_url, configs['STYLE_IMAGE_PATH'])
         # store generated image in cloud storage
 
         # publish link to image w/ painter request id
 
     # publish COMPLETED notification to queue w/ request id
 
-    return HttpResponse(True)
+    return HttpResponse(content_image_url)
