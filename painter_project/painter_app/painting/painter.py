@@ -1,5 +1,3 @@
-import matplotlib.pyplot as plt
-import time
 import tensorflow as tf
 
 from . import image_helper
