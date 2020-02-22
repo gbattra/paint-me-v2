@@ -32,16 +32,20 @@ def submit_request(request):
 
 # /request-paintings
 # - painter_request_id (int)
+# - recipient_email (string)
 def get_paintings_for_request(request):
     paintings = RequestPainting.objects.filter(painter_request_id=request.GET['painter_request_id'])
+    # TODO: check that recipient email matches painting request recipient email
     paintings_serialized = serializers.serialize('json', list(paintings))
     return HttpResponse(paintings_serialized)
 
 
 # /request-painting
 # - request_painting_id (int)
+# - recipient_email (string)
 def get_painting(request):
     painting = RequestPainting.objects.get(id=request.GET['request_painting_id'])
+    # TODO: check that recipient email matches painting request recipient email
     painting_serialized = serializers.serialize('json', [painting])
     return HttpResponse(painting_serialized)
 
