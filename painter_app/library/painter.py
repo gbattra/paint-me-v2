@@ -1,4 +1,5 @@
 import tensorflow as tf
+import time
 
 from . import image_helper
 from . import nst_trainer
@@ -43,6 +44,6 @@ class Painter(object):
         # plt.plot()
         # image_helper.image_show(image, 'Generated Image')
 
-        # image_helper.save_image(image_helper.tensor_to_image(image), 'generated_%s.jpg' % time.time())
+        image_helper.save_image(image_helper.tensor_to_image(image), 'generated_%s.jpg' % time.time())
 
         return image_helper.tensor_to_image(image)

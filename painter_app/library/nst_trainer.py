@@ -23,13 +23,12 @@ class NSTTrainer(object):
     def train(self, image, epochs, steps):
         start = time.time()
 
-        step_index = 0
         for epoch in range(epochs):
             for step in range(steps):
-                step_index += 1
                 self.train_step(image)
                 print('.', end='')
-            print('Train step: {}'.format(step_index))
+                print('Train step: {}'.format(step))
+            print('Train epoch: {}'.format(epoch))
 
         end = time.time()
         print('Total time: {:.1f}'.format(end - start))
