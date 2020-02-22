@@ -44,3 +44,26 @@ def get_painting(request):
     painting = RequestPainting.objects.get(id=request.GET['request_painting_id'])
     painting_serialized = serializers.serialize('json', [painting])
     return HttpResponse(painting_serialized)
+
+
+# /update-request-status
+# - painter_request_id (int)
+# - status_code (int)
+def update_requets_status(request):
+    status_code = request.GET['status_code']
+    painter_request = PainterRequest.objects.get(id=request.GET['painter_request_id'])
+    painter_request.status = status_code
+    painter_request.save()
+
+    if status_code == PainterRequest.COMPLETED:
+        return HttpResponse('Sending email')
+
+
+# / save-painting
+# - painter_request_id (int)
+# - generated_image_url (string)
+def save_painting(request):
+    return RequestPainting.objects.create(
+        painter_request_id=request.GET['painter_request_id'],
+        generated_image_url=request.GET['generated_image_url']
+    )

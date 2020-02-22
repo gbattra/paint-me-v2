@@ -1,29 +1,22 @@
 from google.cloud import pubsub_v1
-from flask import Flask, Response
+from library import painter_engine as engine
 
-app = Flask(__name__)
-
-app.config.from_envvar('APP_SETTINGS')
-
-
-@app.route('/paint')
-def paint():
+if __name__ == '__main__':
     subscriber = pubsub_v1.SubscriberClient()
-    subscription_path = 'projects/%s/subscription/%s' % \
-        (app.config['PUBSUB_PROJECT_ID'], app.config['NEW_PAINTER_REQUEST_SUBSCRIPTION'])
+    subscription_path = 'projects/sylvan-terra-269023/subscriptions/new-painter-request-pull'
+    # subscriber.create_subscription(subscription_path, topic=TOPIC_NAME)
 
     def callback(message):
         print("Received message: {}".format(message))
-        # message.ack()
+        engine.paint('https://i.imgur.com/oZ67OF4.jpg')
+        message.ack()
 
-    streampull = subscriber.subscribe(subscription_path, callback=callback)
+    future = subscriber.subscribe(subscription_path, callback=callback)
 
     try:
-        streampull.result(timeout=10)
+        future.result()
+    except (KeyboardInterrupt, SystemExit):
+        future.cancel()
+        raise
     except:
-        streampull.cancel()
-    # engine.paint('https://i.imgur.com/oZ67OF4.jpg')
-
-
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+        future.cancel()
