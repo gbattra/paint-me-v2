@@ -50,24 +50,60 @@ def get_painting(request):
     return HttpResponse(painting_serialized)
 
 
-# /update-request-status
-# - painter_request_id (int)
-# - status_code (int)
-def update_requets_status(request):
-    status_code = request.GET['status_code']
-    painter_request = PainterRequest.objects.get(id=request.GET['painter_request_id'])
-    painter_request.status = status_code
-    painter_request.save()
+# # /update-request-status
+# # - painter_request_id (int)
+# # - status_code (int)
+# def update_requets_status(request):
+#     status_code = request.GET['status_code']
+#     painter_request = PainterRequest.objects.get(id=request.GET['painter_request_id'])
+#     painter_request.status = status_code
+#     painter_request.save()
+#
+#     if status_code == PainterRequest.COMPLETED:
+#         return HttpResponse('Sending email')
+#
+#     return HttpResponse(True)
 
-    if status_code == PainterRequest.COMPLETED:
-        return HttpResponse('Sending email')
+
+def update_painter_request_status(request):
+    subscriber = pubsub_v1.SubscriberClient()
+    subscription_path = 'projects/sylvan-terra-269023/subscriptions/update-painter-request-status-pull'
+
+    def callback(message):
+        try:
+            data = message.data.decode('utf-8')
+            message.ack()
+            json_data = json.loads(data)
+            print(json_data)
+            status_code = json_data['status_code']
+            painter_request = PainterRequest.objects.get(id=json_data['painter_request_id'])
+            painter_request.status = status_code
+            painter_request.save()
+        except ValueError:
+            raise
+    future = subscriber.subscribe(subscription_path, callback=callback)
+
+    try:
+        future.result()
+    except KeyboardInterrupt:
+        future.cancel()
 
 
-# / save-painting
-# - painter_request_id (int)
-# - generated_image_path (string)
 def save_painting(request):
-    return RequestPainting.objects.create(
-        painter_request_id=request.GET['painter_request_id'],
-        generated_image_path=request.GET['generated_image_path']
-    )
+    subscriber = pubsub_v1.SubscriberClient()
+    subscription_path = 'projects/sylvan-terra-269023/subscriptions/save-painting-pull'
+
+    def callback(message):
+        try:
+            data = message.data.decode('utf-8')
+            message.ack()
+            json_data = json.loads(data)
+            print(json_data)
+        except ValueError:
+            raise
+    future = subscriber.subscribe(subscription_path, callback=callback)
+
+    try:
+        future.result()
+    except KeyboardInterrupt:
+        future.cancel()
