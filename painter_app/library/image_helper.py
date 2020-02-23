@@ -72,9 +72,11 @@ def save_image(image, storage_path):
 
     storage_client = storage.Client()
     bucket = storage_client.bucket('sylvan-terra-269023')
-    blob = bucket.blob('{}/{}'.format(storage_path, filename))
+
+    filepath = '{}/{}'.format(storage_path, filename)
+    blob = bucket.blob(filepath)
     blob.upload_from_filename(filename)
 
     os.remove(filename)
 
-    return storage_path
+    return filepath

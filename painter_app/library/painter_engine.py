@@ -15,3 +15,6 @@ def paint(content_image_path, pretrained_model):
             configs['CONTENT_WEIGHT'],
             configs['STYLE_WEIGHT'])
         image = painter.paint(content_image_path, configs['STYLE_IMAGE_PATH'])
+        filepath = image_helper.save_image(image, 'images/generated')
+
+        # use filepath when calling client to save image

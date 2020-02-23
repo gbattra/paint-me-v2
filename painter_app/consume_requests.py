@@ -20,10 +20,8 @@ def consume():
                 json_data = json.loads(data)
                 print(json_data)
 
-                img = image_helper.load_img(json_data['content_image_path'])
-                image_helper.save_image(image_helper.tensor_to_image(img), 'images/generated')
                 # publish / call endpoint on client to update request status to PROCESSING
-                # engine.paint(json_data['content_image_path'], pretrained_model)
+                engine.paint(json_data['content_image_path'], pretrained_model)
                 # publish / call endpoint on client to update request status to COMPLETE
             except ValueError:
                 raise
