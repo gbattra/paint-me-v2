@@ -43,15 +43,4 @@ class Painter(object):
         # plt.plot()
         # image_helper.image_show(image, 'Generated Image')
 
-        self.save_image(image)
-
         return image_helper.tensor_to_image(image)
-
-    def save_image(self, image):
-        filename = 'generated_%s.jpg' % time.time()
-        outpath = image_helper.save_image(image_helper.tensor_to_image(image), filename)
-
-        # storage_client = storage.Client()
-        # bucket = storage_client.bucket('sylvan-terra-269023')
-        # blob = bucket.blob(outpath)
-        # blob.upload_from_filename(outpath)

@@ -3,7 +3,7 @@ import matplotlib as mpl
 import numpy as np
 import PIL.Image
 import tensorflow as tf
-import io
+import os
 import time
 
 from google.cloud import storage
@@ -58,7 +58,7 @@ def clip_0_1(image):
     return tf.clip_by_value(image, clip_value_min=0.0, clip_value_max=1.0)
 
 
-def save_image(image, filename):
+def save_image(image, storage_path):
     # Ensure the pixel-values are between 0 and 255.
     image = np.clip(image, 0.0, 255.0)
 
@@ -66,7 +66,15 @@ def save_image(image, filename):
     image = image.astype(np.uint8)
 
     # Write the image-file in jpeg-format.
+    filename = 'saved_{}.jpg'.format(time.time())
     with open(filename, 'wb') as file:
         PIL.Image.fromarray(image).save(file, 'jpeg')
 
-    return filename
+    storage_client = storage.Client()
+    bucket = storage_client.bucket('sylvan-terra-269023')
+    blob = bucket.blob('{}/{}'.format(storage_path, filename))
+    blob.upload_from_filename(filename)
+
+    os.remove(filename)
+
+    return storage_path

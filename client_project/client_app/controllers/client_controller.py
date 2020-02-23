@@ -12,16 +12,16 @@ NEW_PAINTER_REQUEST_TOPIC = 'new-painter-request'
 
 
 # /submit-request
-# - content_image_url (string)
+# - content_image_path (string)
 # - recipient_email (string)
 def submit_request(request):
     painter_request = PainterRequest.objects.create(
-        content_image_url=request.GET['content_image_url'],
+        content_image_path=request.GET['content_image_path'],
         recipient_email=request.GET['recipient_email'])
 
     data = {
         'painter_request_id': painter_request.id,
-        'content_image_url': painter_request.content_image_url
+        'content_image_path': painter_request.content_image_path
     }
     publisher = pubsub_v1.PublisherClient()
     topic_path = 'projects/%s/topics/%s' % (PUBSUB_PROJECT_ID, NEW_PAINTER_REQUEST_TOPIC)
@@ -65,9 +65,9 @@ def update_requets_status(request):
 
 # / save-painting
 # - painter_request_id (int)
-# - generated_image_url (string)
+# - generated_image_path (string)
 def save_painting(request):
     return RequestPainting.objects.create(
         painter_request_id=request.GET['painter_request_id'],
-        generated_image_url=request.GET['generated_image_url']
+        generated_image_path=request.GET['generated_image_path']
     )

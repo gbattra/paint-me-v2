@@ -6,7 +6,6 @@ from google.cloud import pubsub_v1, storage
 from library import painter_engine as engine
 from library import image_helper
 
-
 def consume():
     try:
         pretrained_model = VGG19(include_top=False, weights='imagenet')
@@ -16,19 +15,16 @@ def consume():
 
         def callback(message):
             try:
-                filename = 'content_%s.jpg' % time.time()
                 data = message.data.decode('utf-8')
+                message.ack()
                 json_data = json.loads(data)
                 print(json_data)
+
+                img = image_helper.load_img(json_data['content_image_path'])
+                image_helper.save_image(image_helper.tensor_to_image(img), 'images/generated')
                 # publish / call endpoint on client to update request status to PROCESSING
-                engine.paint('images/content/content_image.jpg', pretrained_model)
+                # engine.paint(json_data['content_image_path'], pretrained_model)
                 # publish / call endpoint on client to update request status to COMPLETE
-
-                # image = image_helper.load_img(content_im)
-                # filename = 'generated_%s.jpg' % time.time()
-                # outpath = image_helper.save_image(image_helper.tensor_to_image(image), filename)
-
-                message.ack()
             except ValueError:
                 raise
 
