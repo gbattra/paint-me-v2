@@ -11,5 +11,5 @@ urlpatterns = [
          client_controller.update_painter_request_status,
          name='update-painter-request-status'),
 
-    path('save-painting', client_controller.save_painting, name='save-painting')
+    path('consume-new-paintings', client_controller.consume_new_paintings, name='consume-new-paintings')
 ]

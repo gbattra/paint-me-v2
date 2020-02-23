@@ -16,7 +16,7 @@ STATUS_CODE_FAILED = 4
 
 # TODO: Make these env configs
 PUBSUB_PROJECT_ID = 'sylvan-terra-269023'
-NEW_PAINTER_REQUEST_TOPIC = 'update-painter-request'
+UPDATE_PAINTER_REQUEST_TOPIC = 'update-painter-request-status'
 
 @app.route('/consume-requests')
 def consume_requests():
@@ -36,7 +36,7 @@ def consume_requests():
                 # call endpoint on client to update request status to PROCESSING
                 update_request_status(json_data['painter_request_id'], STATUS_CODE_PROCESSING)
 
-                # engine.paint(json_data['content_image_path'], pretrained_model)
+                engine.paint(json_data['painter_request_id'], json_data['content_image_path'], pretrained_model)
 
                 update_request_status(json_data['painter_request_id'], STATUS_CODE_COMPLETE)
             except ValueError:
@@ -57,7 +57,7 @@ def update_request_status(painter_request_id, status_code):
         'status_code': status_code
     }
     publisher = pubsub_v1.PublisherClient()
-    topic_path = 'projects/%s/topics/%s' % (PUBSUB_PROJECT_ID, NEW_PAINTER_REQUEST_TOPIC)
+    topic_path = 'projects/%s/topics/%s' % (PUBSUB_PROJECT_ID, UPDATE_PAINTER_REQUEST_TOPIC)
     future = publisher.publish(topic_path, data=json.dumps(data).encode('utf-8'))
 
     return future.result()

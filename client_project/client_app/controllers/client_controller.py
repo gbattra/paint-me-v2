@@ -11,6 +11,7 @@ PUBSUB_PROJECT_ID = 'sylvan-terra-269023'
 NEW_PAINTER_REQUEST_TOPIC = 'new-painter-request'
 
 
+# WEBAPP ENDPOINT
 # /submit-request
 # - content_image_path (string)
 # - recipient_email (string)
@@ -30,6 +31,7 @@ def submit_request(request):
     return HttpResponse(future.result())
 
 
+#WEBAPP ENDPOINT
 # /request-paintings
 # - painter_request_id (int)
 # - recipient_email (string)
@@ -40,6 +42,7 @@ def get_paintings_for_request(request):
     return HttpResponse(paintings_serialized)
 
 
+# WEBAPP ENDPOINT
 # /request-painting
 # - request_painting_id (int)
 # - recipient_email (string)
@@ -48,21 +51,6 @@ def get_painting(request):
     # TODO: check that recipient email matches painting request recipient email
     painting_serialized = serializers.serialize('json', [painting])
     return HttpResponse(painting_serialized)
-
-
-# # /update-request-status
-# # - painter_request_id (int)
-# # - status_code (int)
-# def update_requets_status(request):
-#     status_code = request.GET['status_code']
-#     painter_request = PainterRequest.objects.get(id=request.GET['painter_request_id'])
-#     painter_request.status = status_code
-#     painter_request.save()
-#
-#     if status_code == PainterRequest.COMPLETED:
-#         return HttpResponse('Sending email')
-#
-#     return HttpResponse(True)
 
 
 def update_painter_request_status(request):
@@ -79,6 +67,9 @@ def update_painter_request_status(request):
             painter_request = PainterRequest.objects.get(id=json_data['painter_request_id'])
             painter_request.status = status_code
             painter_request.save()
+
+            if status_code == PainterRequest.COMPLETED:
+                print("Sending email")
         except ValueError:
             raise
     future = subscriber.subscribe(subscription_path, callback=callback)
@@ -89,7 +80,7 @@ def update_painter_request_status(request):
         future.cancel()
 
 
-def save_painting(request):
+def consume_new_paintings(request):
     subscriber = pubsub_v1.SubscriberClient()
     subscription_path = 'projects/sylvan-terra-269023/subscriptions/save-painting-pull'
 
