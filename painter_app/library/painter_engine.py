@@ -1,10 +1,9 @@
-from tensorflow.keras.applications.vgg19 import VGG19
 from .painter import Painter
 from .painter_configs import *
 
 
-def paint(content_image_url):
-    pretrained_model = VGG19(include_top=False, weights='imagenet')
+def paint(content_image_url, pretrained_model):
+
     for i in range(len(PAINTER_CONFIGS)):
         configs = PAINTER_CONFIGS[i]
         painter = Painter(
