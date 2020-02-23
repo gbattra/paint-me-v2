@@ -12,8 +12,7 @@ class NSTModel(tf.keras.models.Model):
         super(NSTModel, self).__init__()
         self.style_layers = style_layers
         self.content_layers = content_layers
-
-        self.pretrained_model = tf.keras.applications.VGG19(include_top=False, weights='imagenet')
+        self.pretrained_model = pretrained_model
 
         outputs = [self.pretrained_model.get_layer(name).output for name in self.style_layers + self.content_layers]
         self.miniVgg = tf.keras.Model([self.pretrained_model.input], outputs)
