@@ -4,6 +4,7 @@ import time
 from . import image_helper
 from . import nst_trainer
 from . import nst_model as nst_model
+from google.cloud import storage
 
 
 class Painter(object):
@@ -16,10 +17,8 @@ class Painter(object):
         self.style_weight = style_weight
 
     def paint(self, content_image_path, style_image_path):
-        content_path = tf.keras.utils.get_file('content_image.jpg', content_image_path)
-        style_path = tf.keras.utils.get_file('style_image.jpg', style_image_path)
-        content_image = image_helper.load_img(content_path)
-        style_image = image_helper.load_img(style_path)
+        content_image = image_helper.load_img(content_image_path)
+        style_image = image_helper.load_img(style_image_path)
 
         # plt.plot()
         # image_helper.image_show(content_image, 'Content Image')
@@ -44,6 +43,15 @@ class Painter(object):
         # plt.plot()
         # image_helper.image_show(image, 'Generated Image')
 
-        image_helper.save_image(image_helper.tensor_to_image(image), 'generated_%s.jpg' % time.time())
+        self.save_image(image)
 
         return image_helper.tensor_to_image(image)
+
+    def save_image(self, image):
+        filename = 'generated_%s.jpg' % time.time()
+        outpath = image_helper.save_image(image_helper.tensor_to_image(image), filename)
+
+        # storage_client = storage.Client()
+        # bucket = storage_client.bucket('sylvan-terra-269023')
+        # blob = bucket.blob(outpath)
+        # blob.upload_from_filename(outpath)

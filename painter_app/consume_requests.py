@@ -1,9 +1,10 @@
-import sys
+import time
 import json
-
 from tensorflow.keras.applications.vgg19 import VGG19
-from google.cloud import pubsub_v1
+from google.cloud import pubsub_v1, storage
+
 from library import painter_engine as engine
+from library import image_helper
 
 
 def consume():
@@ -15,12 +16,17 @@ def consume():
 
         def callback(message):
             try:
+                filename = 'content_%s.jpg' % time.time()
                 data = message.data.decode('utf-8')
                 json_data = json.loads(data)
-
+                print(json_data)
                 # publish / call endpoint on client to update request status to PROCESSING
-                engine.paint(json_data['content_image_url'], pretrained_model)
+                engine.paint('images/content/content_image.jpg', pretrained_model)
                 # publish / call endpoint on client to update request status to COMPLETE
+
+                # image = image_helper.load_img(content_im)
+                # filename = 'generated_%s.jpg' % time.time()
+                # outpath = image_helper.save_image(image_helper.tensor_to_image(image), filename)
 
                 message.ack()
             except ValueError:

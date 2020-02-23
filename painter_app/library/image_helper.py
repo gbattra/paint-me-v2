@@ -3,7 +3,10 @@ import matplotlib as mpl
 import numpy as np
 import PIL.Image
 import tensorflow as tf
+import io
+import time
 
+from google.cloud import storage
 
 mpl.rcParams['figure.figsize'] = (12, 12)
 mpl.rcParams['axes.grid'] = False
@@ -23,18 +26,20 @@ def tensor_to_image(tensor):
 
 
 def load_img(img_path):
-    max_dim = MAX_DIM
-    img = tf.io.read_file(img_path)
-    img = tf.image.decode_image(img, channels=3)
+    storage_client = storage.Client()
+    bucket = storage_client.bucket('sylvan-terra-269023')
+    bytes = bucket.blob(img_path).download_as_string()
+
+    img = tf.image.decode_jpeg(bytes, channels=3)
     img = tf.image.convert_image_dtype(img, tf.float32)
 
     shape = tf.cast(tf.shape(img)[:-1], tf.float32)
     long_dim = max(shape)
-    scale = max_dim / long_dim
-
+    scale = MAX_DIM / long_dim
     new_shape = tf.cast(shape * scale, tf.int32)
 
     img = tf.image.resize(img, new_shape)
+
     return img
 
 
@@ -48,8 +53,10 @@ def image_show(image, title=None):
 
     plt.show()
 
+
 def clip_0_1(image):
     return tf.clip_by_value(image, clip_value_min=0.0, clip_value_max=1.0)
+
 
 def save_image(image, filename):
     # Ensure the pixel-values are between 0 and 255.
@@ -61,3 +68,5 @@ def save_image(image, filename):
     # Write the image-file in jpeg-format.
     with open(filename, 'wb') as file:
         PIL.Image.fromarray(image).save(file, 'jpeg')
+
+    return filename
