@@ -53,7 +53,7 @@ def get_painting(request):
     return HttpResponse(painting_serialized)
 
 
-def update_painter_request_status(request):
+def consume_painter_request_status_update(request):
     subscriber = pubsub_v1.SubscriberClient()
     subscription_path = 'projects/sylvan-terra-269023/subscriptions/update-painter-request-status-pull'
 
@@ -90,6 +90,10 @@ def consume_new_paintings(request):
             message.ack()
             json_data = json.loads(data)
             print(json_data)
+            RequestPainting.objects.create(
+                painter_request_id=json_data['painter_request_id'],
+                generated_image_path=json_data['generated_image_path']
+            )
         except ValueError:
             raise
     future = subscriber.subscribe(subscription_path, callback=callback)
